@@ -1,11 +1,12 @@
 import React from 'react';
 
-function Cart() {
+function About() {
   return (
     <div className="page">
-      <h2>Cart Page – Coming Soon</h2>
+      <h2>About Page</h2>
+      <p>This page will be updated in Week 5.</p>
     </div>
   );
 }
 
-export default Cart;
+export default About;
