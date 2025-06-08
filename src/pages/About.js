@@ -2,9 +2,9 @@ import React from 'react';
 
 function About() {
   return (
-    <div className="page">
-      <h2>About Page</h2>
-      <p>This page will be updated in Week 5.</p>
+    <div style={{ padding: '1rem' }}>
+      <h2>About</h2>
+      <p>Will be updated</p>
     </div>
   );
 }

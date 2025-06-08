@@ -2,9 +2,9 @@ import React from 'react';
 
 function Movies() {
   return (
-    <div className="page">
+    <div style={{ padding: '1rem' }}>
       <h2>Movies Page</h2>
-      <p>This page will be updated in Week 4.</p>
+      <p>This is where movie content would go.</p>
     </div>
   );
 }
