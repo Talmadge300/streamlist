@@ -1,56 +1,38 @@
-import React, { useState, useEffect } from 'react';
-import DeleteIcon from '@mui/icons-material/Delete';
-import EditIcon from '@mui/icons-material/Edit';
-import CheckIcon from '@mui/icons-material/Check';
+import React, { useState } from "react";
+import { useStreamList } from "../context/StreamListContext";
+import DeleteIcon from "@mui/icons-material/Delete";
+import EditIcon from "@mui/icons-material/Edit";
+import CheckIcon from "@mui/icons-material/Check";
 
 function StreamList() {
-  const [movie, setMovie] = useState('');
-  const [movieList, setMovieList] = useState(() => {
-    const saved = localStorage.getItem('movies');
-    return saved ? JSON.parse(saved) : [];
-  });
+  const {
+    streamList,
+    addToStreamList,
+    deleteFromStreamList,
+    toggleComplete,
+    editStreamList,
+  } = useStreamList();
 
+  const [movie, setMovie] = useState("");
   const [editingIndex, setEditingIndex] = useState(null);
-  const [editText, setEditText] = useState('');
-
-  useEffect(() => {
-    localStorage.setItem('movies', JSON.stringify(movieList));
-  }, [movieList]);
+  const [editText, setEditText] = useState("");
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (movie.trim() === '') return;
-    setMovieList([...movieList, { text: movie, isCompleted: false }]);
-    setMovie('');
+    if (movie.trim() === "") return;
+    addToStreamList(movie);
+    setMovie("");
   };
 
-  const toggleComplete = (index) => {
-    const updated = [...movieList];
-    updated[index].isCompleted = !updated[index].isCompleted;
-    setMovieList(updated);
-  };
-
-  const deleteMovie = (index) => {
-    const updated = [...movieList];
-    updated.splice(index, 1);
-    setMovieList(updated);
-  };
-
-  const startEditing = (index) => {
-    setEditingIndex(index);
-    setEditText(movieList[index].text);
-  };
-
-  const saveEdit = (index) => {
-    const updated = [...movieList];
-    updated[index].text = editText;
-    setMovieList(updated);
+  const handleSaveEdit = (index) => {
+    if (editText.trim() === "") return;
+    editStreamList(index, editText);
     setEditingIndex(null);
-    setEditText('');
+    setEditText("");
   };
 
   return (
-    <div style={{ padding: '1rem' }}>
+    <div className="page">
       <h2>My StreamList</h2>
       <form onSubmit={handleSubmit}>
         <input
@@ -62,8 +44,8 @@ function StreamList() {
         <button type="submit">Add</button>
       </form>
       <ul>
-        {movieList.map((item, index) => (
-          <li key={index} style={{ marginTop: '1rem' }}>
+        {streamList.map((item, index) => (
+          <li key={index}>
             {editingIndex === index ? (
               <>
                 <input
@@ -71,16 +53,29 @@ function StreamList() {
                   value={editText}
                   onChange={(e) => setEditText(e.target.value)}
                 />
-                <button onClick={() => saveEdit(index)}>Save</button>
+                <button onClick={() => handleSaveEdit(index)}>Save</button>
               </>
             ) : (
               <>
-                <span style={{ textDecoration: item.isCompleted ? 'line-through' : 'none', marginRight: '1rem' }}>
+                <span
+                  style={{
+                    textDecoration: item.isCompleted ? "line-through" : "none",
+                  }}
+                >
                   {item.text}
                 </span>
-                <button onClick={() => toggleComplete(index)}><CheckIcon /></button>
-                <button onClick={() => startEditing(index)}><EditIcon /></button>
-                <button onClick={() => deleteMovie(index)}><DeleteIcon /></button>
+                <button onClick={() => toggleComplete(index)}>
+                  <CheckIcon />
+                </button>
+                <button onClick={() => {
+                  setEditingIndex(index);
+                  setEditText(item.text);
+                }}>
+                  <EditIcon />
+                </button>
+                <button onClick={() => deleteFromStreamList(index)}>
+                  <DeleteIcon />
+                </button>
               </>
             )}
           </li>
